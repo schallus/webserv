@@ -46,3 +46,6 @@ Thumbs.db
 
 # visual studio code settings
 .vscode/
+
+#ignore log files
+*.log
