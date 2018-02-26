@@ -80,6 +80,18 @@ user.editUser = (req, res, next) => {
             message: 'Nothing to update. Please provide a firstName, a lastName or a role.',
         });
     }
+
+    let update = {};
+
+    if (req.body.firstName) update.firstName = req.body.firstName;
+    if (req.body.lastName) update.lastName = req.body.lastName;
+    if (req.body.role) update.role = req.body.role;
+
+    console.log(update);
+
+    User.findOneAndUpdate({ _id: userId }, update, {new: true}, (user) => {
+        console.log(user);
+    });
 };
 
 

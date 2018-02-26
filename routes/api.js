@@ -46,7 +46,12 @@ router.route('/users')
     .get(userCtrl.listUsers)
     .post(userCtrl.addUser);
 router.route('/users/:userId')
-    .get(userCtrl.getInformation);
+    .get(userCtrl.getInformation)
+    .patch(userCtrl.editUser);
+
+// ----- issue -----
+router.route('/issues')
+    .get(issueCtrl.listIssues);
   
 
 router.all('*', (req, res, next) => {

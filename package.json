@@ -4,7 +4,7 @@
   "author": "Florian Schaller",
   "license": "MIT",
   "scripts": {
-    "start": "node server.js"
+    "start": "supervisor server.js"
   },
   "private": true,
   "dependencies": {
