@@ -51,8 +51,8 @@ router.route('/users/:userId')
 
 // ----- issue -----
 router.route('/issues')
-    .get(issueCtrl.listIssues);
-  
+    .get(issueCtrl.listIssues)
+    .post(issueCtrl.addIssue);
 
 router.all('*', (req, res, next) => {
     next({
