@@ -54,9 +54,10 @@ router.route('/issues')
     .get(issueCtrl.listIssues)
     .post(issueCtrl.addIssue);
 router.route('/issues/:issueId')
-    .get(issueCtrl.getInformation);
-    //.patch(issueCtrl.editIssue);
-  
+    .get(issueCtrl.getInformation)
+    .delete(issueCtrl.deleteIssue)
+    .patch(issueCtrl.editIssue);
+
 
 router.all('*', (req, res, next) => {
     next({
