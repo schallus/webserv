@@ -11,19 +11,23 @@ const user = {
     firstName: {
         type: String,
         minlength: 2,
-        maxlength: 20
+        maxlength: 20,
+        required: true
     },
     lastName: {
         type: String,
         minlength: 2,
-        maxlength: 20
+        maxlength: 20,
+        required: true
     },
     role: {
         type: String,
-        enum: ['citizen', 'manager']
+        enum: ['citizen', 'manager'],
+        required: true
     },
     createdAt: {
-        type: Date
+        type: Date,
+        required: true
     },
 };
 

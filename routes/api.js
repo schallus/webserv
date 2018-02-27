@@ -51,7 +51,11 @@ router.route('/users/:userId')
 
 // ----- issue -----
 router.route('/issues')
-    .get(issueCtrl.listIssues);
+    .get(issueCtrl.listIssues)
+    .post(issueCtrl.addIssue);
+router.route('/issues/:issueId')
+    .get(issueCtrl.getInformation);
+    //.patch(issueCtrl.editIssue);
   
 
 router.all('*', (req, res, next) => {
@@ -65,12 +69,11 @@ router.all('*', (req, res, next) => {
 
 router.use((err, req, res, next) => {
     console.log(err);
-    // map unexpected errors to default format
-    if (!err.status || !err.message) {
-        return res.status(500).json({
+    if (err.name === 'ValidationError') {
+        return res.status(422).json({
             error: {
-                status: 500,
-                message: 'Something unexpected happened',
+                status: 422,
+                message: err.toString().replace('ValidationError: ', '').split(', ')
             },
         });
     }
@@ -82,10 +85,19 @@ router.use((err, req, res, next) => {
             },
         });
     }
-    res.status(err.status).json({
+    if (err.status && err.message) {
+        res.status(err.status).json({
+            error: {
+                status: err.status,
+                message: err.message,
+            },
+        });
+    }
+    // map unexpected errors to default format
+    return res.status(500).json({
         error: {
-            status: err.status,
-            message: err.message,
+            status: 500,
+            message: 'Something unexpected happened',
         },
     });
 });
