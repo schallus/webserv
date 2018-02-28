@@ -8,6 +8,16 @@ const Issue = require('../models/issue');
 
 const user = {};
 
+/**
+ * @api {get} /users List all the user
+ * @apiName GetUser
+ * @apiGroup User
+ *
+ * @apiParam {Number} id Unique identifier of the user
+ *
+ * @apiSuccess {String} firstName First name of the user
+ * @apiSuccess {String} lastName  Last name of the user
+ */
 user.listUsers = (req, res, next) => {
     User.find()
         .exec()
