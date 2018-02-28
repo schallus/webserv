@@ -3,5 +3,5 @@
     "version": "1.0.0",
     "description": "Creation of an API for a school project",
     "title": "Webserv Project",
-    "url" : "https://webserv-flola.herokuapp.com"
+    "url" : "https://webserv-flola.herokuapp.com/web-api/v1"
   }
