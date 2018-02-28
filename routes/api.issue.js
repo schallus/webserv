@@ -11,6 +11,17 @@ const User = require('../models/user');
 
 const issue = {};
 
+/**
+ * @api {get} /issues List of all users
+ * @apiName GetIssue
+ * @apiGroup Issue
+ *
+ * @apiParam {Number} id Unique identifier of the issue
+ *
+ * @apiSuccess {String} firstName First name of the user
+ * @apiSuccess {String} lastName  Last name of the user
+ */
+
 issue.listIssues = (req, res, next) => {
     Issue.find().count(function (err, total) {
         if (err) return next(err);
