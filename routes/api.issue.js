@@ -16,7 +16,7 @@ const issue = {};
  * @apiName GetIssues
  * @apiGroup Issue
  *
- * @apiParam {Number} id Unique identifier of the issue
+ * @apiParam {Number} issueId Unique identifier of the issue
  *
  * @apiSuccess {Object[]} issues list of all the issues
  * 
@@ -110,7 +110,7 @@ issue.listIssues = (req, res, next) => {
  * @apiName GetIssue
  * @apiGroup Issue
  *
- * @apiParam {ObjectId} id Unique identifier of the issue
+ * @apiParam {ObjectId} issueId Unique identifier of the issue
  *
  * 
  * @apiSuccessExample {json} Success-Response:
@@ -120,20 +120,20 @@ issue.listIssues = (req, res, next) => {
  *    "total": 9,
  *    "result": [
  *       {
- *            "status": "inProgress",
- *          "tags": [
- *              "test",
- *                "test123",
- *               "blabliblou"
- *          ],
- *         "_id": "5a952acd04ec4715b814437c",
- *        "description": "123",
+ *        "status": "inProgress",
+ *        "tags": [
+ *           "test",
+ *           "test123",
+ *           "blabliblou"
+ *       ],
+ *       "_id": "5a952acd04ec4715b814437c",
+ *       "description": "123",
  *       "imageUrl": "https://wikiclic.com/wp-content/uploads/2017/04/images-libres-de-droit.jpg",
- *            "latitude": 46.778507,
- *           "longitude": 6.648635,
- *          "user": "5a8ec4a26232180d984b6ebb",
- *         "createdAt": "2018-02-27T09:54:21.189Z",
- *        "updatedAt": "2018-02-28T09:46:33.409Z"
+ *       "latitude": 46.778507,
+ *       "longitude": 6.648635,
+ *       "user": "5a8ec4a26232180d984b6ebb",
+ *       "createdAt": "2018-02-27T09:54:21.189Z",
+ *       "updatedAt": "2018-02-28T09:46:33.409Z"
  *   }
  *    ]
  *}
@@ -188,7 +188,7 @@ issue.getInformation = (req, res, next) => {
  * @apiParam {String} user        UserID of the user who create the issue
  *
  * 
- * @apiParam {ObjectId} id Unique identifier of the issue
+ * @apiParam {ObjectId} issueId Unique identifier of the issue
  * 
  * @apiSuccessExample {json} Success-Response:
  * {
@@ -213,6 +213,28 @@ issue.getInformation = (req, res, next) => {
  *        "_id": "5a96753856fef588979c6ad5"
  *    }
  * }
+ * 
+ * @apiError (422) {Object} UserInvalid the userID is not valid
+ * 
+ * @apiErrorExample Error-Response:
+ *  HTTP/1.1 422 Unprocessable Entity
+ *  {
+ *      "error": {
+ *          "status": 422,
+ *          "message": "The user is not valid."
+ *      }
+ *  }
+ * 
+ * @apiError (422) {Object} UserInexistant the userID does not exist
+ * 
+ * @apiErrorExample Error-Response:
+ *  HTTP/1.1 422 Unprocessable Entity
+ *  {
+ *      "error": {
+ *          "status": 422,
+ *          "message": "The user does not exist."
+ *      }
+ *  }
  * 
  * @apiUse ServerTimeout
  * 
@@ -358,6 +380,45 @@ issue.editIssue = (req, res, next) => {
             next(err);
         });
 };
+/**
+ * @api {delete} /issues/:issueId Delet an issue
+ * @apiName DeleteIssue
+ * @apiGroup Issue
+ *
+ * @apiParam {ObjectId} issueId Unique identifier of the issue
+ * 
+ * @apiSuccessExample {json} Success-Response:
+ *  HTTP/1.1 200 OK
+ * *  {
+ *  "result": {
+ *     "status": "inProgress",
+ *    "tags": [
+ *          "test123"
+ *       ],
+ *        "_id": "5a952acd04ec4715b814437c",
+ *        "description": "123",
+ *        "imageUrl": "https://wikiclic.com/wp-content/uploads/2017/04/images-libres-de-droit.jpg",
+ *        "latitude": 46.778507,
+ *        "longitude": 6.648635,
+ *        "user": "5a8ec4a26232180d984b6ebb",
+ *        "createdAt": "2018-02-27T09:54:21.189Z",
+ *        "updatedAt": "2018-02-28T11:37:12.150Z"
+ *    }
+ *  }
+ * 
+ * @apiError (404) {Object} IssueInexistant The issue does not exist
+ * 
+ * @apiErrorExample Error-Response :
+ * HTTP/1.1 404 Not Found
+ * {
+ * "error": {
+ *     "status": 404,
+ *      "message": "This issue does not exist."
+ *   }
+ * }
+ * @apiUse ServerTimeout
+ * 
+ */
 
 issue.deleteIssue = (req, res, next) => {
     const issueId = req.params.issueId;
