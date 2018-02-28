@@ -21,7 +21,7 @@ const app = express();
 
 // ----- MIDDLEWARE -----
 
-// app.use(express.static(path.join(__dirname, 'public'))); // Public folder
+app.use(express.static('docs')); // API DOC
 app.use(cors());
 app.use(helmet());
 
@@ -33,7 +33,7 @@ app.use(helmet());
 app.use('/web-api/v1', apiRouter);
 
 app.all('*', (req, res) => {
-    res.status(200).send('Hello World!');
+    res.redirect('/');
 });
 
 // ----- ENTRY POINT -----

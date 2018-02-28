@@ -5,7 +5,8 @@
   "license": "MIT",
   "scripts": {
     "start": "node server.js",
-    "dev": "supervisor server.js"
+    "dev": "supervisor server.js",
+    "apidoc": "apidoc -i routes -o docs"
   },
   "private": true,
   "dependencies": {
