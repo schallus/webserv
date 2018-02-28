@@ -12,14 +12,41 @@ const User = require('../models/user');
 const issue = {};
 
 /**
- * @api {get} /issues List of all users
- * @apiName GetIssue
- * @apiGroup Issue
+ * @api {get} /issues List of all issues
+ * @apiName GetIssues
+ * @apiGroup Issues
  *
  * @apiParam {Number} id Unique identifier of the issue
  *
- * @apiSuccess {String} firstName First name of the user
- * @apiSuccess {String} lastName  Last name of the user
+ * @apiSuccess {Object[]} issues list of all the issues
+ * 
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ * {
+ *    "page": 1,
+ *    "pageSize": 100,
+ *    "total": 9,
+ *    "result": [
+ *        {
+ *            "status": "inProgress",
+ *            "tags": [
+ *                "test",
+ *                "test123",
+ *                "blabliblou"
+ *            ],
+ *            "_id": "5a952acd04ec4715b814437c",
+ *            "description": "123",
+ *            "imageUrl": "https://wikiclic.com/wp-content/uploads/2017/04/images-libres-de-droit.jpg",
+ *            "latitude": 46.778507,
+ *            "longitude": 6.648635,
+ *            "user": "5a8ec4a26232180d984b6ebb",
+ *            "createdAt": "2018-02-27T09:54:21.189Z",
+ *           "updatedAt": "2018-02-28T09:46:33.409Z"
+ *        },
+ *    ]
+ * }
+ *
+ * @apiUse ServerTimeout
  */
 
 issue.listIssues = (req, res, next) => {
@@ -36,7 +63,7 @@ issue.listIssues = (req, res, next) => {
         } else if (mongoose.Types.ObjectId.isValid(req.query.user)) {
             // Find all issues created by a specific users
             query = query.where('user').equals(req.query.user);
-        } else if(req.query.user){
+        } else if (req.query.user) {
             return next({
                 status: 422,
                 message: 'This user ID does not exist.',
@@ -78,6 +105,51 @@ issue.listIssues = (req, res, next) => {
             });
     });
 };
+/**
+ * @api {get} /issues/:issueId Request Issue information
+ * @apiName GetIssue
+ * @apiGroup Issue
+ *
+ * @apiParam {ObjectId} id Unique identifier of the issue
+ *
+ * 
+ * @apiSuccessExample {json} Success-Response:
+ * {
+ *    "page": 1,
+ *    "pageSize": 100,
+ *    "total": 9,
+ *    "result": [
+ *       {
+ *            "status": "inProgress",
+ *          "tags": [
+ *              "test",
+ *                "test123",
+ *               "blabliblou"
+ *          ],
+ *         "_id": "5a952acd04ec4715b814437c",
+ *        "description": "123",
+ *       "imageUrl": "https://wikiclic.com/wp-content/uploads/2017/04/images-libres-de-droit.jpg",
+ *            "latitude": 46.778507,
+ *           "longitude": 6.648635,
+ *          "user": "5a8ec4a26232180d984b6ebb",
+ *         "createdAt": "2018-02-27T09:54:21.189Z",
+ *        "updatedAt": "2018-02-28T09:46:33.409Z"
+ *   }
+ *    ]
+ *}
+ * 
+ * @apiError (404) {Object} inexistantIssue This issue does not exist
+ * 
+ * @apiErrorExample Error-Response :
+ * HTTP/1.1 404 Not Found
+ * {
+ * "error": {
+ *     "status": 422,
+ *      "message": "This user ID does not exist."
+ *   }
+ * }
+ * @apiUse ServerTimeout
+ */
 
 issue.getInformation = (req, res, next) => {
     const issueId = req.params.issueId;
@@ -103,13 +175,29 @@ issue.getInformation = (req, res, next) => {
         });
 };
 
+/**
+ * @api {post} /issues Create a new Issue
+ * @apiName CreateIssue
+ * @apiGroup Issue
+ * 
+ * @apiParam {String} description  Short description of the issue
+ * @apiParam {String} imageUrl     A valid URL
+ * @apiParam {Number} latitude     A valid coordinate Ex. 123.45678939 
+ * @apiParam {Number} longitude     A valid coordinate Ex. 123.45678939 
+ * @apiParam {String} [tags]        Optional Tags
+ * @apiParam {String} user        UserID of the user who create the issue
+ *
+ * 
+ * @apiParam {ObjectId} id Unique identifier of the issue
+ */
+  
 issue.addIssue = (req, res, next) => {
     if (!mongoose.Types.ObjectId.isValid(req.body.user)) {
-       return next({
-        status: 422,
-        message: 'The user id is not valid',
-       });
-        
+        return next({
+            status: 422,
+            message: 'The user id is not valid',
+        });
+
     }
     User.findOne({
             _id: req.body.user
