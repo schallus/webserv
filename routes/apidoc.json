@@ -1,7 +1,7 @@
 {
     "name": "Webserv Project",
     "version": "1.0.0",
-    "description": "Creation of an API for a school project",
+    "description": "Creation of an API for a school project\nIn our API, every response are wrapped into a 'result' object.",
     "title": "Webserv Project",
     "url" : "https://webserv-flola.herokuapp.com/web-api/v1"
   }

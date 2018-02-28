@@ -133,9 +133,11 @@ user.getInformation = (req, res, next) => {
  * @api {post} /users Create a new user
  * @apiName CreateUser
  * @apiGroup User
+ * 
+ * @apiUse DataFormUrlencoded
  *
- * @apiParam {String} firstName Firstname of the user
- * @apiParam {String} lastName Firstname of the user
+ * @apiParam {String{2..20}} firstName Firstname of the user
+ * @apiParam {String{2..20}} lastName Firstname of the user
  * @apiParam {String="citizen","manager"} role Role of the user
  *
  * @apiSuccess {Object} user New user created
@@ -149,6 +151,17 @@ user.getInformation = (req, res, next) => {
  *          "lastName": "Doe",
  *          "role": "manager",
  *          "createdAt": "2018-02-22T13:22:17.749Z"
+ *      }
+ *  }
+ * 
+ * @apiError (418) {Object} UserAlreadyExists The user already exists
+ * 
+ * @apiErrorExample Error-User-Existant:
+ *  HTTP/1.1 418 I'm a teapot
+ *  {
+ *      "error": {
+ *          "status": 418,
+ *          "message": "This user already exists"
  *      }
  *  }
  * 
@@ -168,6 +181,12 @@ user.addUser = (req, res, next) => {
             });
         })
         .catch((err) => {
+            if(err.name=="BulkWriteError"){
+                return next({
+                    status:418,
+                    message:"This user already exists"
+                });
+            }
             next(err);
         });
 };
@@ -177,11 +196,13 @@ user.addUser = (req, res, next) => {
  * @apiName EditUser
  * @apiGroup User
  *
- * @apiParam {String} [firstName] Firstname of the user
- * @apiParam {String} [lastName] Firstname of the user
+ * @apiParam {String{2..20}} [firstName] Firstname of the user
+ * @apiParam {String{2..20}} [lastName] Firstname of the user
  * @apiParam {String="citizen","manager"} [role] Role of the user
  *
  * @apiSuccess {Object} user Updated user
+ * 
+ * @apiUse DataFormUrlencoded
  * 
  * @apiSuccessExample {json} Success-Response:
  *  HTTP/1.1 200 OK

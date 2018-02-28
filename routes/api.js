@@ -24,6 +24,12 @@ router.use(bodyParser.json({
 }));
 
 /**
+ * @apiDefine DataFormUrlencoded
+ * @apiDescription The parameters must be provided using the x-www-form-urlencoded format.
+ * @apiHeader {String} Content-Type x-www-form-urlencoded
+ */
+
+/**
  * @apiDefine ServerTimeout
  *
  * @apiError (522) {Object} ConnectionTimeOut Connection Timed Out after 5 seconds.

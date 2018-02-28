@@ -17,6 +17,10 @@ const issue = {};
  * @apiGroup Issue
  *
  * @apiParam {Number} issueId Unique identifier of the issue
+ * @apiParam {String} [status] Filter by status
+ * @apiParam {Number} [page] Number of the page to retrieve
+ * @apiParam {Number} [pageSize] Size of the page to retrieve
+ * @apiParam {ObjectID} [userId] The ID of the user who create the issue to retrieve
  *
  * @apiSuccess {Object[]} issues List of all the issues
  * 
@@ -182,13 +186,14 @@ issue.getInformation = (req, res, next) => {
  * @apiName CreateIssue
  * @apiGroup Issue
  * 
- * @apiParam {String} description  Short description of the issue
- * @apiParam {String} imageUrl     A valid URL
+ * @apiParam {String{..1000}} description  Short description of the issue
+ * @apiParam {String{..500}} imageUrl     A valid URL
  * @apiParam {Number{-90, 90}} latitude     A valid coordinate Ex. 90.45678939 
  * @apiParam {Number{-180, 180}} longitude     A valid coordinate Ex. 123.45678939 
  * @apiParam {String} [tags]        Optional Tags
  * @apiParam {String} user        UserID of the user who create the issue
  *
+ * @apiUse DataFormUrlencoded
  * 
  * @apiParam {ObjectId} issueId Unique identifier of the issue
  * 
@@ -225,7 +230,7 @@ issue.getInformation = (req, res, next) => {
  *  HTTP/1.1 422 Unprocessable Entity
  *  {
  *      "error": {
- *          "status": 418,
+ *          "status": 422,
  *          "message": "The user is not valid."
  *      }
  *  }
@@ -298,15 +303,17 @@ issue.addIssue = (req, res, next) => {
  * @apiName EditIssue
  * @apiGroup Issue
  *
- * @apiParam {String} [description]  Short description of the issue
- * @apiParam {String} [status]       The status of the issue. 
- * @apiParam {String} [imageUrl]     A valid URL
+ * @apiParam {String{..1000}} [description]  Short description of the issue
+ * @apiParam {String="new","inProgress","canceled","completed"} [status]    The status of the issue. 
+ * @apiParam {String{..500}} [imageUrl]     A valid URL
  * @apiParam {Number} [latitude]     A valid coordinate Ex. 123.45678939 
  * @apiParam {Number} [longitude]     A valid coordinate Ex. 123.45678939 
  * @apiParam {String} [tags]        Optional Tags. Separated by comas
  * @apiParam {String} [user]        UserID of the user who create the issue
  *
  * @apiSuccess {Object} issue Updated issue
+ * 
+ * @apiUse DataFormUrlencoded
  * 
  * @apiSuccessExample {json} Success-Response:
  *  HTTP/1.1 200 OK
