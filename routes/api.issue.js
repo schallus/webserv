@@ -12,9 +12,9 @@ const User = require('../models/user');
 const issue = {};
 
 /**
- * @api {get} /issues List of all issues
+ * @api {get} /issues List all the issues
  * @apiName GetIssues
- * @apiGroup Issues
+ * @apiGroup Issue
  *
  * @apiParam {Number} id Unique identifier of the issue
  *
@@ -106,7 +106,7 @@ issue.listIssues = (req, res, next) => {
     });
 };
 /**
- * @api {get} /issues/:issueId Request Issue information
+ * @api {get} /issues/:issueId Get the Issue information
  * @apiName GetIssue
  * @apiGroup Issue
  *
@@ -189,8 +189,35 @@ issue.getInformation = (req, res, next) => {
  *
  * 
  * @apiParam {ObjectId} id Unique identifier of the issue
+ * 
+ * @apiSuccessExample {json} Success-Response:
+ * {
+ *   "result": {
+ *       "status": "new",
+ *       "description": "test",
+ *       "imageUrl": "wikicli.ch",
+ *       "latitude": 54.928,
+ *       "longitude": 5.686756,
+ *       "tags": [
+ *           "test",
+ *           "keksni"
+ *       ],
+ *       "user": {
+ *           "_id": "5a8ec4096232180d984b6eb9",
+ *           "firstName": "Florian",
+ *           "lastName": "Schaller",
+ *           "role": "manager",
+ *           "createdAt": "2018-02-22T13:22:17.749Z"
+ *       },
+ *        "createdAt": "2018-02-28T09:24:08.485Z",
+ *        "_id": "5a96753856fef588979c6ad5"
+ *    }
+ * }
+ * 
+ * @apiUse ServerTimeout
+ * 
  */
-  
+
 issue.addIssue = (req, res, next) => {
     if (!mongoose.Types.ObjectId.isValid(req.body.user)) {
         return next({
@@ -239,6 +266,59 @@ issue.addIssue = (req, res, next) => {
 
 
 };
+/**
+ * @api {patch} /issues/:issueId Edit an issue
+ * @apiName EditIssue
+ * @apiGroup Issue
+ *
+ * @apiParam {String} [description]  Short description of the issue
+ * @apiParam {String} [imageUrl]     A valid URL
+ * @apiParam {Number} [latitude]     A valid coordinate Ex. 123.45678939 
+ * @apiParam {Number} [longitude]     A valid coordinate Ex. 123.45678939 
+ * @apiParam {String} [tags]        Optional Tags
+ * @apiParam {String} [user]        UserID of the user who create the issue
+ *
+ * @apiSuccess {Object} issue Updated issue
+ * 
+ * @apiSuccessExample {json} Success-Response:
+ *  HTTP/1.1 200 OK
+ *  {
+ *  "result": {
+ *     "status": "inProgress",
+ *    "tags": [
+ *          "test123"
+ *       ],
+ *        "_id": "5a952acd04ec4715b814437c",
+ *        "description": "123",
+ *        "imageUrl": "https://wikiclic.com/wp-content/uploads/2017/04/images-libres-de-droit.jpg",
+ *        "latitude": 46.778507,
+ *        "longitude": 6.648635,
+ *        "user": {
+ *            "_id": "5a8ec4a26232180d984b6ebb",
+ *            "firstName": "test",
+ *            "lastName": "test123",
+ *            "role": "manager",
+ *            "createdAt": "2018-02-22T13:24:50.873Z"
+ *        },
+ *        "createdAt": "2018-02-27T09:54:21.189Z",
+ *        "updatedAt": "2018-02-28T11:37:12.150Z"
+ *    }
+ *  }
+ * 
+ * @apiError (422) {Object} NothingToUpdate Nothing to update. Please make a change.
+ * 
+ * @apiErrorExample Error-Response:
+ *  HTTP/1.1 422 Unprocessable Entity
+ *  {
+ *      "error": {
+ *          "status": 422,
+ *          "message": "Nothing to update. Please make a change."
+ *      }
+ *  }
+ * 
+ * @apiUse ServerTimeout
+ * 
+ */
 
 issue.editIssue = (req, res, next) => {
     const issueId = req.params.issueId;

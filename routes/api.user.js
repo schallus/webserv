@@ -10,13 +10,29 @@ const user = {};
 
 /**
  * @api {get} /users List all the user
- * @apiName GetUser
+ * @apiName GetUserList
  * @apiGroup User
  *
- * @apiParam {Number} id Unique identifier of the user
- *
- * @apiSuccess {String} firstName First name of the user
- * @apiSuccess {String} lastName  Last name of the user
+ * @apiSuccess {Object} user User object
+ * 
+ * @apiSuccessExample {json} Success-Response:
+ *  HTTP/1.1 200 OK
+ *  {
+ *      "result": [
+ *          {
+ *              "_id": "5a8ec4096232180d984b6eb9",
+ *              "firstName": "John",
+ *              "lastName": "Doe",
+ *              "role": "manager",
+ *              "createdAt": "2018-02-22T13:22:17.749Z",
+ *              "issuesCreatedCount": 3
+ *          },
+ *          {...}
+ *      ]
+ *  }
+ * 
+ * @apiUse ServerTimeout
+ * 
  */
 user.listUsers = (req, res, next) => {
     User.find()
@@ -66,6 +82,30 @@ user.listUsers = (req, res, next) => {
         });
 };
 
+/**
+ * @api {get} /users/:userId Get the user information
+ * @apiName GetUser
+ * @apiGroup User
+ *
+ * @apiParam {Number} id Unique identifier of the user
+ *
+ * @apiSuccess {Object} user User object
+ * 
+ * @apiSuccessExample {json} Success-Response:
+ *  HTTP/1.1 200 OK
+ *  {
+ *      "result": {
+ *          "_id": "5a8ec4096232180d984b6eb9",
+ *          "firstName": "John",
+ *          "lastName": "Doe",
+ *          "role": "manager",
+ *          "createdAt": "2018-02-22T13:22:17.749Z"
+ *      }
+ *  }
+ * 
+ * @apiUse ServerTimeout
+ * 
+ */
 user.getInformation = (req, res, next) => {
     const userId = req.params.userId;
     User.findOne({
@@ -89,7 +129,32 @@ user.getInformation = (req, res, next) => {
         });
 };
 
-
+/**
+ * @api {post} /users Create a new user
+ * @apiName CreateUser
+ * @apiGroup User
+ *
+ * @apiParam {String} firstName Firstname of the user
+ * @apiParam {String} lastName Firstname of the user
+ * @apiParam {String="citizen","manager"} role Role of the user
+ *
+ * @apiSuccess {Object} user New user created
+ * 
+ * @apiSuccessExample {json} Success-Response:
+ *  HTTP/1.1 200 OK
+ *  {
+ *      "result": {
+ *          "_id": "5a8ec4096232180d984b6eb9",
+ *          "firstName": "John",
+ *          "lastName": "Doe",
+ *          "role": "manager",
+ *          "createdAt": "2018-02-22T13:22:17.749Z"
+ *      }
+ *  }
+ * 
+ * @apiUse ServerTimeout
+ * 
+ */
 user.addUser = (req, res, next) => {
     User.create({
             firstName: req.body.firstName,
@@ -103,16 +168,47 @@ user.addUser = (req, res, next) => {
             });
         })
         .catch((err) => {
-            if (err.name == "BulkWriteError"){
-                next ({
-                    status: 418,
-                    message: 'This user already exist.',
-                })
-            }
             next(err);
         });
 };
 
+/**
+ * @api {patch} /users/:userId Edit a user
+ * @apiName EditUser
+ * @apiGroup User
+ *
+ * @apiParam {String} [firstName] Firstname of the user
+ * @apiParam {String} [lastName] Firstname of the user
+ * @apiParam {String="citizen","manager"} [role] Role of the user
+ *
+ * @apiSuccess {Object} user Updated user
+ * 
+ * @apiSuccessExample {json} Success-Response:
+ *  HTTP/1.1 200 OK
+ *  {
+ *      "result": {
+ *          "_id": "5a8ec4096232180d984b6eb9",
+ *          "firstName": "John",
+ *          "lastName": "Doe",
+ *          "role": "manager",
+ *          "createdAt": "2018-02-22T13:22:17.749Z"
+ *      }
+ *  }
+ * 
+ * @apiError (422) {Object} NothingToUpdate Nothing to update. Please make a change.
+ * 
+ * @apiErrorExample Error-Response:
+ *  HTTP/1.1 422 Unprocessable Entity
+ *  {
+ *      "error": {
+ *          "status": 422,
+ *          "message": "Nothing to update. Please make a change."
+ *      }
+ *  }
+ * 
+ * @apiUse ServerTimeout
+ * 
+ */
 user.editUser = (req, res, next) => {
     const userId = req.params.userId;
 
