@@ -91,13 +91,6 @@ user.getInformation = (req, res, next) => {
 
 
 user.addUser = (req, res, next) => {
-    if (!req.body || !req.body.firstName || !req.body.lastName || !req.body.role) {
-        return next({
-            status: 422,
-            message: 'Please provide all the information required.',
-        });
-    }
-
     User.create({
             firstName: req.body.firstName,
             lastName: req.body.lastName,
@@ -117,17 +110,17 @@ user.addUser = (req, res, next) => {
 user.editUser = (req, res, next) => {
     const userId = req.params.userId;
 
-    if (!req.body.firstName && !req.body.lastName && !req.body.role) {
-        return next({
-            status: 422,
-            message: 'Nothing to update. Please provide a firstName, a lastName or a role.',
-        });
-    }
-
     let userPatch = {};
     if (req.body.firstName) userPatch.firstName = req.body.firstName;
     if (req.body.lastName) userPatch.lastName = req.body.lastName;
     if (req.body.role) userPatch.role = req.body.role;
+
+    if (Object.keys(userPatch).length == 0) {
+        return next({
+            status: 422,
+            message: 'Nothing to update. Please make a change.',
+        });
+    }
 
     User.findByIdAndUpdate(userId, {
             $set: userPatch

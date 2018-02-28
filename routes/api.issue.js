@@ -112,7 +112,7 @@ issue.addIssue = (req, res, next) => {
 
 issue.editIssue = (req, res, next) => {
     const issueId = req.params.issueId;
-
+    
     let issuePatch = {
         updatedAt: new Date()
     };
@@ -123,6 +123,13 @@ issue.editIssue = (req, res, next) => {
     if (req.body.longitude) issuePatch.longitude = req.body.longitude;
     if (req.body.tags) issuePatch.tags = req.body.tags.replace(/^[,\s]+|[,\s]+$/g, '').replace(/\s*,\s*/g, ',').split(",");
     if (req.body.user) issuePatch.user = req.body.user;
+
+    if (Object.keys(issuePatch).length == 1) {
+        return next({
+            status: 422,
+            message: 'Nothing to update. Please make a change.',
+        });
+    }
 
     Issue.findByIdAndUpdate(issueId, {
             $set: issuePatch
