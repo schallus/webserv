@@ -133,6 +133,8 @@ user.getInformation = (req, res, next) => {
  * @api {post} /users Create a new user
  * @apiName CreateUser
  * @apiGroup User
+ * 
+ * @apiUse DataFormUrlencoded
  *
  * @apiParam {String} firstName Firstname of the user
  * @apiParam {String} lastName Firstname of the user
