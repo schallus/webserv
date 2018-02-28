@@ -40,11 +40,6 @@ userSchema.index({
     unique: true
 });
 
-// ----- STATIC METHODS -----
-
-/* userSchema.statics.findByEmail = (email) => {
-    return DB.getModel(userSchema, 'User').findOne({email: email});
-}; */
 
 // ----- EXPORT -----
 

@@ -103,6 +103,12 @@ user.addUser = (req, res, next) => {
             });
         })
         .catch((err) => {
+            if (err.name == "BulkWriteError"){
+                next ({
+                    status: 418,
+                    message: 'This user already exist.',
+                })
+            }
             next(err);
         });
 };

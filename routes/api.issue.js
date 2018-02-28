@@ -7,6 +7,7 @@ const mongoose = require('mongoose');
 
 // custom
 const Issue = require('../models/issue');
+const User = require('../models/user');
 
 const issue = {};
 
@@ -24,6 +25,11 @@ issue.listIssues = (req, res, next) => {
         } else if (mongoose.Types.ObjectId.isValid(req.query.user)) {
             // Find all issues created by a specific users
             query = query.where('user').equals(req.query.user);
+        } else if(req.query.user){
+            return next({
+                status: 422,
+                message: 'This user ID does not exist.',
+            })
         }
 
         // Filter issue by status
@@ -87,32 +93,57 @@ issue.getInformation = (req, res, next) => {
 };
 
 issue.addIssue = (req, res, next) => {
-    Issue.create({
-            status: 'new',
-            description: req.body.description,
-            imageUrl: req.body.imageUrl,
-            latitude: req.body.latitude,
-            longitude: req.body.longitude,
-            tags: req.body.tags.replace(/^[,\s]+|[,\s]+$/g, '').replace(/\s*,\s*/g, ',').split(","),
-            user: req.body.user,
-            createdAt: new Date()
+    if (!mongoose.Types.ObjectId.isValid(req.body.user)) {
+       return next({
+        status: 422,
+        message: 'The user id is not valid',
+       });
+        
+    }
+    User.findOne({
+            _id: req.body.user
         })
-        .then((issue) => {
-            return issue.populate('user').execPopulate();
-        })
-        .then((issueWithUser) => {
-            res.status(200).json({
-                result: issueWithUser,
-            });
+        .exec()
+        .then((user) => {
+            if (!user) {
+                return Promise.reject({
+                    status: 422,
+                    message: 'The user does not exist',
+                });
+            }
+            Issue.create({
+                    status: 'new',
+                    description: req.body.description,
+                    imageUrl: req.body.imageUrl,
+                    latitude: req.body.latitude,
+                    longitude: req.body.longitude,
+                    tags: req.body.tags.replace(/^[,\s]+|[,\s]+$/g, '').replace(/\s*,\s*/g, ',').split(","),
+                    user: req.body.user,
+                    createdAt: new Date()
+                })
+                .then((issue) => {
+                    return issue.populate('user').execPopulate();
+                })
+                .then((issueWithUser) => {
+                    res.status(200).json({
+                        result: issueWithUser,
+                    });
+                })
+                .catch((err) => {
+                    next(err);
+                });
+
         })
         .catch((err) => {
             next(err);
         });
+
+
 };
 
 issue.editIssue = (req, res, next) => {
     const issueId = req.params.issueId;
-    
+
     let issuePatch = {
         updatedAt: new Date()
     };
