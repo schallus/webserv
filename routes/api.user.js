@@ -141,7 +141,7 @@ user.getInformation = (req, res, next) => {
  * @apiSuccess {Object} user New user created
  * 
  * @apiSuccessExample {json} Success-Response:
- *  HTTP/1.1 200 OK
+ *  HTTP/1.1 201 Created
  *  {
  *      "result": {
  *          "_id": "5a8ec4096232180d984b6eb9",
@@ -163,7 +163,7 @@ user.addUser = (req, res, next) => {
             createdAt: new Date()
         })
         .then((user) => {
-            res.status(200).json({
+            res.status(201).json({
                 result: user,
             });
         })
@@ -197,7 +197,7 @@ user.addUser = (req, res, next) => {
  * 
  * @apiError (422) {Object} NothingToUpdate Nothing to update. Please make a change.
  * 
- * @apiErrorExample Error-Response:
+ * @apiErrorExample Error-No-Change:
  *  HTTP/1.1 422 Unprocessable Entity
  *  {
  *      "error": {

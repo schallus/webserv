@@ -18,7 +18,7 @@ const issue = {};
  *
  * @apiParam {Number} issueId Unique identifier of the issue
  *
- * @apiSuccess {Object[]} issues list of all the issues
+ * @apiSuccess {Object[]} issues List of all the issues
  * 
  * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
@@ -112,8 +112,10 @@ issue.listIssues = (req, res, next) => {
  *
  * @apiParam {ObjectId} issueId Unique identifier of the issue
  *
+ * @apiSuccess {Object} issue Requested issue
  * 
  * @apiSuccessExample {json} Success-Response:
+ * HTTP/1.1 200 OK
  * {
  *    "page": 1,
  *    "pageSize": 100,
@@ -140,7 +142,7 @@ issue.listIssues = (req, res, next) => {
  * 
  * @apiError (404) {Object} inexistantIssue This issue does not exist
  * 
- * @apiErrorExample Error-Response :
+ * @apiErrorExample Error-Issue-Inexsistant :
  * HTTP/1.1 404 Not Found
  * {
  * "error": {
@@ -182,15 +184,18 @@ issue.getInformation = (req, res, next) => {
  * 
  * @apiParam {String} description  Short description of the issue
  * @apiParam {String} imageUrl     A valid URL
- * @apiParam {Number} latitude     A valid coordinate Ex. 123.45678939 
- * @apiParam {Number} longitude     A valid coordinate Ex. 123.45678939 
+ * @apiParam {Number{-90, 90}} latitude     A valid coordinate Ex. 90.45678939 
+ * @apiParam {Number{-180, 180}} longitude     A valid coordinate Ex. 123.45678939 
  * @apiParam {String} [tags]        Optional Tags
  * @apiParam {String} user        UserID of the user who create the issue
  *
  * 
  * @apiParam {ObjectId} issueId Unique identifier of the issue
  * 
+ * @apiSuccess {Object} issue New issue created
+ * 
  * @apiSuccessExample {json} Success-Response:
+ * HTTP/1.1 201 Created
  * {
  *   "result": {
  *       "status": "new",
@@ -216,18 +221,18 @@ issue.getInformation = (req, res, next) => {
  * 
  * @apiError (422) {Object} UserInvalid the userID is not valid
  * 
- * @apiErrorExample Error-Response:
+ * @apiErrorExample Error-User-Unvalid:
  *  HTTP/1.1 422 Unprocessable Entity
  *  {
  *      "error": {
- *          "status": 422,
+ *          "status": 418,
  *          "message": "The user is not valid."
  *      }
  *  }
  * 
  * @apiError (422) {Object} UserInexistant the userID does not exist
  * 
- * @apiErrorExample Error-Response:
+ * @apiErrorExample Error-User-Inexistant:
  *  HTTP/1.1 422 Unprocessable Entity
  *  {
  *      "error": {
@@ -243,7 +248,7 @@ issue.getInformation = (req, res, next) => {
 issue.addIssue = (req, res, next) => {
     if (!mongoose.Types.ObjectId.isValid(req.body.user)) {
         return next({
-            status: 422,
+            status: 418,
             message: 'The user id is not valid',
         });
 
@@ -273,7 +278,7 @@ issue.addIssue = (req, res, next) => {
                     return issue.populate('user').execPopulate();
                 })
                 .then((issueWithUser) => {
-                    res.status(200).json({
+                    res.status(201).json({
                         result: issueWithUser,
                     });
                 })
@@ -294,10 +299,11 @@ issue.addIssue = (req, res, next) => {
  * @apiGroup Issue
  *
  * @apiParam {String} [description]  Short description of the issue
+ * @apiParam {String} [status]       The status of the issue. 
  * @apiParam {String} [imageUrl]     A valid URL
  * @apiParam {Number} [latitude]     A valid coordinate Ex. 123.45678939 
  * @apiParam {Number} [longitude]     A valid coordinate Ex. 123.45678939 
- * @apiParam {String} [tags]        Optional Tags
+ * @apiParam {String} [tags]        Optional Tags. Separated by comas
  * @apiParam {String} [user]        UserID of the user who create the issue
  *
  * @apiSuccess {Object} issue Updated issue
@@ -329,7 +335,7 @@ issue.addIssue = (req, res, next) => {
  * 
  * @apiError (422) {Object} NothingToUpdate Nothing to update. Please make a change.
  * 
- * @apiErrorExample Error-Response:
+ * @apiErrorExample Error-No-Change:
  *  HTTP/1.1 422 Unprocessable Entity
  *  {
  *      "error": {
@@ -381,11 +387,13 @@ issue.editIssue = (req, res, next) => {
         });
 };
 /**
- * @api {delete} /issues/:issueId Delet an issue
+ * @api {delete} /issues/:issueId Delete an issue
  * @apiName DeleteIssue
  * @apiGroup Issue
  *
  * @apiParam {ObjectId} issueId Unique identifier of the issue
+ * 
+ * @apiSuccess {Object} issue Issue deleted
  * 
  * @apiSuccessExample {json} Success-Response:
  *  HTTP/1.1 200 OK
@@ -408,7 +416,7 @@ issue.editIssue = (req, res, next) => {
  * 
  * @apiError (404) {Object} IssueInexistant The issue does not exist
  * 
- * @apiErrorExample Error-Response :
+ * @apiErrorExample Error-Issue-Inexistant :
  * HTTP/1.1 404 Not Found
  * {
  * "error": {

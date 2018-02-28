@@ -28,7 +28,7 @@ router.use(bodyParser.json({
  *
  * @apiError (522) {Object} ConnectionTimeOut Connection Timed Out after 5 seconds.
  *
- * @apiErrorExample Error-Response:
+ * @apiErrorExample Error-Timed-Out:
  *     HTTP/1.1 522 Connection Timed Out
  *     {
  *       "error": {
