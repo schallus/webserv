@@ -103,6 +103,17 @@ user.listUsers = (req, res, next) => {
  *      }
  *  }
  * 
+* @apiError (404) {Object} UserNotExist The user does not exist
+ * 
+ * @apiErrorExample Error-User-Existant:
+ *  HTTP/1.1 404 Not Found
+ *  {
+ *      "error": {
+ *          "status": 404,
+ *          "message": "This user does not exist."
+ *      }
+ *  }
+ * 
  * @apiUse ServerTimeout
  * 
  */
